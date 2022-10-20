@@ -1,0 +1,29 @@
+
+html{
+    height: -webkit-fill-available;
+    scroll-behavior: smooth;
+}
+
+body{
+    font-family: 'Space Mono', monospace;
+    font-size: 12px;
+    position: relative;
+    height: -webkit-fill-available;
+}
+
+div, h1,h2,h3, span, p, input{
+    transition: color, background .5s;
+}
+
+@media only screen and (min-width: 750px) {
+    body{
+        font-size: 13px;
+    }
+    
+}
+
+@media only screen and (min-width: 1024px) {
+    body{
+        font-size: 14px;
+    }
+}

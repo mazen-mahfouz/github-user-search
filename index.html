@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="dist/import-all.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <title>Search users in github</title>
+</head>
+
+<body>
+    <div id="app" class="bg-[color:var(--bakground-allApp)] min-h-full flex justify-center items-center" :class="changeColor">
+       <main class="w-[90%] sm:w-[75%] md:w-[730px] py-[25px]">
+            <header class="w-full">
+                <nav class="w-full flex justify-between items-center mb-[35px]">
+                    <h1 class="text-[2.18em] font-bold text-[color:var(--dark-blue-color)]">devfinder</h1>
+                    <div class="flex justify-between items-center cursor-pointer">
+                        <h1 @click="changeColor == 'dark'? changeColor = 'light': changeColor = 'dark' " class="cursor-pointer text-[1.2em] font-bold text-[color:var(--gray-blue-color)] mr-[10px] tracking-[1.8px]">{{changeColor == 'light'? 'DARK' : 'LIGHT'}}</h1>
+                        <img :src="'img/icon-' + [changeColor == 'light'? 'moon' : 'sun'] + '.svg'" class="w-[20px] h-[20px] mr-[10px] cursor-pointer">
+                    </div>
+                </nav>
+                <div id="main-search" class="flex justify-between items-center bg-[color:var(--background-divs)] rounded-2xl px-[var(--paddingXdiv)] py-[7px] shadow-[0px_16px_30px_-10px_rgb(70_96_187_/_20%)] mb-[20px]">
+                    <img src="img/icon-search.svg" class="w-[20px] h-[20px]" alt="search">
+                    <input type="text" placeholder="Search GitHub username..." class="w-full placeholder-[color:var(--color-text)] mx-[8px] pl-[15px] pr-[10px] py-[8px] text-[1.1em] text-[color:var(--color-text)] bg-[color:var(--background-divs)]" v-model="search_input" @keyup.enter="fetch_data()">
+                    <span id="error-text" class="text-[1.1em] text-red-600 mr-[10px]" v-show="state_fetch == false">No results</span>
+                    <button class="py-[13px] px-[15px] bg-[#07f] hover:bg-[#61abff] text-[1.2em] text-white rounded-lg font-bold" @click="fetch_data()">Search</button>
+                </div>
+            </header>
+            <div id="userdata" class="bg-[color:var(--background-divs)] rounded-2xl px-[calc(var(--paddingXdiv)_+_1em)] pt-[35px] pb-[25px] shadow-[0px_16px_30px_-10px_rgb(70_96_187_/_20%)]">
+                <div class="w-full flex flex-col mb-[20px] relative">
+                    <div class="grid grid-cols-[auto_auto] md:grid-cols-[auto_1fr] items-start gap-[18px] md:gap-[32px] justify-start leading-[1.7] mb-[10px]">
+                        <img :src="data_user.avatar_url == null || ''? 'img/null.jpg' : data_user.avatar_url" alt="userImg" class="w-[75px] h-[75px] rounded-full sm:w-[120px] sm:h-[120px]">
+                        <div class="grid md:grid-cols-[auto_auto] items-baseline">
+                            <h1 class="text-[1.4em] text-[color:var(--dark-blue-color)] font-bold sm:text-[1.9em]">{{data_user.name}}</h1>
+                            <a href="#" class="text-[#07f] text-[1.1em]">@{{data_user.login}}</a>
+                            <span id="dataTime" class=" md:justify-self-end md:row-[1/4] md:col-[2] text-[1.1em] text-[color:var(--gray-blue-color)] block">Joined {{data_user.created_at | datatime}} </span>
+                            <p class="text-[1.1em] text-[color:var(--gray-blue-color)] mt-[25px] sm:mt-[50px] ml-[-88px] md:mt-[15px] md:ml-0">{{data_user.bio == null || data_user.bio == ''? 'This profile has no bio.' : data_user.bio}}</p>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div class="w-full bg-[color:var(--bakground-allApp)] py-[20px] rounded-lg grid grid-cols-[1fr_1fr_1fr] text-center mb-[30px] md:w-auto md:ml-[140px]">
+                        <div class="justify-self-center">
+                            <h1 class="text-[1em] text-[color:var(--color-text)] mb-[5px]">Repo</h1>
+                            <span class="text-[color:var(--dark-blue-color)] font-bold text-[1.35em]">{{data_user.public_repos}}</span>
+                        </div>
+                        <div class="justify-self-center">
+                            <h1 class="text-[1em] text-[color:var(--color-text)] mb-[5px]">Followers</h1>
+                            <span class="text-[color:var(--dark-blue-color)] font-bold text-[1.35em]">{{data_user.followers}}</span>
+                        </div>
+                        <div class="justify-self-center">
+                            <h1 class="text-[1em] text-[color:var(--color-text)] mb-[5px]">Following</h1>
+                            <span class="text-[color:var(--dark-blue-color)] font-bold text-[1.35em]">{{data_user.following}}</span>
+                        </div>
+                    </div>
+                    <div class="md:grid md:grid-cols-[1fr_1fr] md:ml-[140px]">
+                        <div class="flex items-center mb-[18px] md:mb-[20px]">
+                            <img src="img/icon-location.svg" alt="location" class="w-[15px] mr-[25px] md:mr-[10px]">
+                            <h1 class="text-[1.15em] text-[color:var(--color-text)]">{{data_user.location == null || data_user.location == ''? 'No Location' : data_user.location}}</h1>
+                        </div>
+                        <div class="flex items-center mb-[18px] md:mb-[20px]">
+                            <img src="img/icon-website.svg" alt="location" class="w-[18px] mr-[25px] md:mr-[10px]">
+                            <a :href="data_user.blog == null || data_user.blog == ''? '' : data_user.blog" class="break-all text-[1.15em] text-[color:var(--color-text)] hover:underline hover:underline-offset-[5px]">{{data_user.blog == null || data_user.blog == ""? 'No blog' : data_user.blog}}</a>
+                        </div>
+                        <div class="flex items-center mb-[18px] md:mb-[20px]">
+                            <img src="img/icon-twitter.svg" alt="location" class="w-[18px] mr-[25px] md:mr-[10px]">
+                            <a href="" class="text-[1.15em] text-[color:var(--color-text)]">{{data_user.twitter_username == null || data_user.twitter_username == ''? 'Not Available' : data_user.twitter_username}}</a>
+                        </div>
+                        <div class="flex items-center mb-[18px] md:mb-[20px]">
+                            <img src="img/icon-company.svg" alt="location" class="w-[18px] mr-[25px] md:mr-[10px]">
+                            <a href="" class="text-[1.15em] text-[color:var(--color-text)] hover:#90a4d4">{{data_user.company == null || data_user.company == ''? 'No company' : data_user.company}}</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+       </main>
+    </div>
+    
+    <script src="js/vue.js"></script>
+    <script src="axios/dist/axios.js"></script>
+    <script src="js/main.js"></script>
+</body>
+
+</html>

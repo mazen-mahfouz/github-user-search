@@ -1,0 +1,67 @@
+html {
+  height: -webkit-fill-available;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Space Mono", monospace;
+  font-size: 12px;
+  position: relative;
+  height: -webkit-fill-available;
+}
+
+div, h1, h2, h3, span, p, input {
+  transition: color, background 0.5s;
+}
+
+@media only screen and (min-width: 750px) {
+  body {
+    font-size: 13px;
+  }
+}
+@media only screen and (min-width: 1024px) {
+  body {
+    font-size: 14px;
+  }
+}
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+:root {
+  --paddingXdiv: .8em;
+  --bakground-allApp: #f5f7ff;
+  --dark-blue-color: #2a3341;
+  --gray-blue-color: #697c9b;
+  --background-divs: #fff;
+  --color-text: #4b699b;
+  --background-dark-div: #f5f7ff;
+}
+
+.light {
+  --bakground-allApp: #f5f7ff;
+  --dark-blue-color: #2a3341;
+  --gray-blue-color: #697c9b;
+  --background-divs: #fff;
+  --color-text: #4b699b;
+}
+
+.dark {
+  --bakground-allApp: #141d2e;
+  --dark-blue-color: #fff;
+  --gray-blue-color: #fff;
+  --background-divs: #1e2b48;
+  --color-text: #fff;
+}
+
+input:focus {
+  outline: 2px solid var(--gray-blue-color);
+  border-radius: 3px;
+}
+
+@media only screen and (min-width: 300px) {
+  :root {
+    --paddingXdiv: 1.4em;
+  }
+}
+
+/*# sourceMappingURL=import-all.css.map */
